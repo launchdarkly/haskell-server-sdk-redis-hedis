@@ -1,0 +1,24 @@
+name:                launchdarkly-server-sdk-redis-hedis
+version:             0.1.0
+github:              "launchdarkly/haskell-server-sdk-redis-hedis"
+license:             Apache-2.0
+license-file:        "LICENSE"
+author:              "LaunchDarkly"
+maintainer:          "dev@launchdarkly.com"
+copyright:           "2023 Catamorphic, Co"
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+- LICENSE
+
+synopsis:            LaunchDarkly Server-Side SDK - Redis Integration
+category:            Web
+
+description:         Please see the README on GitHub at <https://github.com/launchdarkly/haskell-server-sdk-redis-hedis#readme>
+library:
+  source-dirs: src
+  ghc-options:
+  - -fwarn-unused-imports
+  - -Wall
+  - -Wno-name-shadowing
