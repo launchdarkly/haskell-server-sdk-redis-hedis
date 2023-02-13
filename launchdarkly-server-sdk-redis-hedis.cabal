@@ -52,4 +52,33 @@ library
     , text >=1.2.3.1 && <2.1
   default-language: Haskell2010
 
+test-suite haskell-server-sdk-redis-hedis-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Spec.Initialization
+      Util
+      LaunchDarkly.Server.Store.Redis
+      LaunchDarkly.Server.Store.Redis.Internal
+      Paths_launchdarkly_server_sdk_redis_hedis
+  hs-source-dirs:
+      test
+      src
+  default-extensions:
+      DataKinds
+      DeriveAnyClass
+      LambdaCase
+      OverloadedStrings
+      ScopedTypeVariables
+      TypeApplications
+  ghc-options: -rtsopts -threaded -with-rtsopts=-N -Wno-name-shadowing -fwarn-unused-imports -Wall
+  build-depends:
+      HUnit
+    , aeson >=1.4.4.0 && <1.6 || >=2.0.1.0 && <2.2
+    , base >=4.7 && <5
+    , bytestring >=0.10.8.2 && <0.12
+    , exceptions >=0.10.2 && <0.11
+    , generic-lens >=1.1.0.0 && <2.3
+    , hedis >=0.12.7 && <0.16
+    , text >=1.2.3.1 && <2.1
   default-language: Haskell2010

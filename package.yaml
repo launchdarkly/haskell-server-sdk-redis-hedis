@@ -24,6 +24,7 @@ library:
   - -fwarn-unused-imports
   - -Wall
   - -Wno-name-shadowing
+
 dependencies:
   - aeson >=1.4.4.0 && <1.6 || >= 2.0.1.0 && <2.2
   - base >=4.7 && <5
@@ -32,6 +33,21 @@ dependencies:
   - hedis >=0.12.7 && <0.16
   - generic-lens >=1.1.0.0 && <2.3
   - text >=1.2.3.1 && <2.1
+tests:
+  haskell-server-sdk-redis-hedis-test:
+    main: Spec.hs
+    source-dirs:
+    - test
+    - src
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+    - -Wno-name-shadowing
+    - -fwarn-unused-imports
+    - -Wall
+    dependencies:
+    - HUnit
 
 default-extensions:
 - DataKinds
@@ -39,3 +55,4 @@ default-extensions:
 - LambdaCase
 - OverloadedStrings
 - ScopedTypeVariables
+- TypeApplications
