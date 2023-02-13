@@ -1,16 +1,16 @@
--- | The public interface for the LaunchDarkly Haskell Redis integration
 module LaunchDarkly.Server.Store.Redis.Internal
     ( RedisStoreConfig
     , makeRedisStoreConfig
     , redisConfigSetNamespace
     , makeRedisStore
-    , redisUpsertInternal
     ) where
 
 import Control.Exception (throwIO)
 import Control.Monad (forM_, void)
 import Control.Monad.Catch (Exception, Handler (..), catches)
 import Control.Monad.IO.Class (MonadIO, liftIO)
+import Data.Bifunctor (first)
+import Data.Functor ((<&>))
 import Data.ByteString (ByteString)
 import Data.Generics.Product (getField)
 import Data.Maybe (isJust)
@@ -72,7 +72,7 @@ makeRedisStore config =
             , persistentDataStoreAllFeatures = redisGetAll config
             }
 
-data RedisError = RedisError Text deriving (Typeable, Show, Exception)
+newtype RedisError = RedisError Text deriving (Typeable, Show, Exception)
 
 makeKey :: RedisStoreConfig -> Text -> ByteString
 makeKey config key = encodeUtf8 $ T.concat [namespace config, ":", key]
@@ -85,7 +85,7 @@ exceptOnReply = \case
 run :: RedisStoreConfig -> Redis a -> StoreResult a
 run config action =
     catches
-        (runRedis (connection config) action >>= pure . pure)
+        (runRedis (connection config) action <&> pure)
         [ Handler $ \(e :: ConnectionLostException) -> pure $ Left $ T.pack $ show e
         , Handler $ \(RedisError err) -> pure $ Left err
         ]
@@ -97,7 +97,7 @@ redisInitialize :: RedisStoreConfig -> KeyMap (KeyMap SerializedItemDescriptor) 
 redisInitialize config values = run config $ do
     del (map (makeKey config) $ objectKeys values) >>= void . exceptOnReply
     forM_ (toList values) $ \(kind, features) -> forM_ (toList features) $ \(key, feature) ->
-        (hset (makeKey config kind) (encodeUtf8 key) $ serializeWithPlaceholder feature) >>= void . exceptOnReply
+        hset (makeKey config kind) (encodeUtf8 key) (serializeWithPlaceholder feature) >>= void . exceptOnReply
     set (makeKey config "$inited") "" >>= void . exceptOnReply
 
 redisUpsert :: RedisStoreConfig -> Text -> Text -> SerializedItemDescriptor -> StoreResult Bool
@@ -112,14 +112,14 @@ redisUpsertInternal hook config kind key opaque = run config tryUpsert
             >> hget space (encodeUtf8 key)
             >>= exceptOnReply
             >>= \x ->
-                (liftIO hook) >> case x of
-                    Nothing -> doInsert
-                    (Just byteString) -> case byteStringToVersionedData byteString of
-                        Nothing -> pure True
-                        Just decodedVersion ->
-                            if getField @"version" decodedVersion >= getField @"version" opaque
-                                then pure False
-                                else doInsert
+                liftIO hook >> case x of
+                  Nothing -> doInsert
+                  (Just byteString) -> case byteStringToVersionedData byteString of
+                      Nothing -> pure True
+                      Just decodedVersion ->
+                          if getField @"version" decodedVersion >= getField @"version" opaque
+                              then pure False
+                              else doInsert
     space = makeKey config kind
     doInsert =
         multiExec (hset space (encodeUtf8 key) (serializeWithPlaceholder opaque)) >>= \case
@@ -132,18 +132,16 @@ redisGetFeature config kind key =
     run config $
         hget (makeKey config kind) (encodeUtf8 key)
             >>= exceptOnReply
-            >>= \result -> pure $ (pure . createSerializedItemDescriptor) =<< result
+            >>= \result -> pure $ createSerializedItemDescriptor <$> result
 
 redisIsInitialized :: RedisStoreConfig -> StoreResult Bool
 redisIsInitialized config =
     run config $
-        get (makeKey config "$inited")
-            >>= exceptOnReply
-            >>= pure . isJust
+        (get (makeKey config "$inited")
+            >>= exceptOnReply) <&> isJust
 
 redisGetAll :: RedisStoreConfig -> Text -> StoreResult (KeyMap SerializedItemDescriptor)
 redisGetAll config kind =
     run config $
-        hgetall (makeKey config kind)
-            >>= exceptOnReply
-            >>= pure . mapValues createSerializedItemDescriptor . fromList . map (\(k, v) -> (decodeUtf8 k, v))
+        (hgetall (makeKey config kind)
+            >>= exceptOnReply) <&> (mapValues createSerializedItemDescriptor . fromList . map (first decodeUtf8))
