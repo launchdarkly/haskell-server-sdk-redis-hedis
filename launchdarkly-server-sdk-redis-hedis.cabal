@@ -58,6 +58,7 @@ test-suite haskell-server-sdk-redis-hedis-test
   other-modules:
       Spec.Get
       Spec.Initialization
+      Spec.Upsert
       Util
       LaunchDarkly.Server.Store.Redis
       LaunchDarkly.Server.Store.Redis.Internal
