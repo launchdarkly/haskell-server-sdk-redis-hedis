@@ -1,19 +1,20 @@
 module Spec.Upsert (allTests) where
 
+import Data.ByteString.Char8 (pack)
+import Data.Char (toLower)
+import GHC.Natural (Natural)
 import qualified LaunchDarkly.Server.Store as Store
 import Test.HUnit
-import Util (emptyData, makeDefaultRedisBackend, defaultPrefix)
-import GHC.Natural (Natural)
-import Data.ByteString.Char8 (pack)
 import Text.Printf
-import Data.Char (toLower)
+import Util (defaultPrefix, emptyData, makeDefaultRedisBackend)
 
 createTestFlag :: Natural -> Bool -> Store.SerializedItemDescriptor
-createTestFlag version deleted = Store.SerializedItemDescriptor
-    { Store.item = Just $ pack $ printf "{\"deleted\":%s,\"version\":%d}" (map toLower $ show deleted) version
-    , Store.version = version
-    , Store.deleted = deleted
-    }
+createTestFlag version deleted =
+    Store.SerializedItemDescriptor
+        { Store.item = Just $ pack $ printf "{\"deleted\":%s,\"version\":%d}" (map toLower $ show deleted) version
+        , Store.version = version
+        , Store.deleted = deleted
+        }
 
 testHandlesVersionsAppropriately :: Natural -> Natural -> Natural -> Test
 testHandlesVersionsAppropriately initialVersion secondVersion expectedVersion = TestCase $ do
@@ -24,10 +25,8 @@ testHandlesVersionsAppropriately initialVersion secondVersion expectedVersion = 
     flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
 
     assertEqual "" (Right $ Just expectedFlag) flag
-
-    where
-
-    expectedFlag = (createTestFlag expectedVersion False)  { Store.version = 0, Store.deleted = False }
+  where
+    expectedFlag = (createTestFlag expectedVersion False) {Store.version = 0, Store.deleted = False}
 
 testUpsertionAfterDeletionHandlesVersionsAppropriately :: Natural -> Natural -> Natural -> Bool -> Test
 testUpsertionAfterDeletionHandlesVersionsAppropriately initialVersion secondVersion expectedVersion expectedDeletionStatus = TestCase $ do
@@ -38,10 +37,8 @@ testUpsertionAfterDeletionHandlesVersionsAppropriately initialVersion secondVers
     flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
 
     assertEqual "" (Right $ Just expectedFlag) flag
-
-    where
-
-    expectedFlag = (createTestFlag expectedVersion expectedDeletionStatus)  { Store.version = 0, Store.deleted = False }
+  where
+    expectedFlag = (createTestFlag expectedVersion expectedDeletionStatus) {Store.version = 0, Store.deleted = False}
 
 testUpsertionToADeletionHandlesVersionsAppropriately :: Natural -> Natural -> Natural -> Bool -> Test
 testUpsertionToADeletionHandlesVersionsAppropriately initialVersion secondVersion expectedVersion expectedDeletionStatus = TestCase $ do
@@ -52,11 +49,8 @@ testUpsertionToADeletionHandlesVersionsAppropriately initialVersion secondVersio
     flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
 
     assertEqual "" (Right $ Just expectedFlag) flag
-
-    where
-
-    expectedFlag = (createTestFlag expectedVersion expectedDeletionStatus)  { Store.version = 0, Store.deleted = False }
-
+  where
+    expectedFlag = (createTestFlag expectedVersion expectedDeletionStatus) {Store.version = 0, Store.deleted = False}
 
 allTests :: Test
 allTests =

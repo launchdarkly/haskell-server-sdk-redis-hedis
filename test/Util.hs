@@ -5,7 +5,7 @@ import Data.Function ((&))
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Database.Redis as R
-import LaunchDarkly.AesonCompat (emptyObject, insertKey, singleton, KeyMap)
+import LaunchDarkly.AesonCompat (KeyMap, emptyObject, insertKey, singleton)
 import LaunchDarkly.Server.Store (PersistentDataStore (..), SerializedItemDescriptor (..))
 import LaunchDarkly.Server.Store.Redis (makeRedisStore, makeRedisStoreConfig, redisConfigSetNamespace)
 
@@ -19,10 +19,10 @@ emptyData =
         & insertKey "segments" emptyObject
 
 initialFlag :: SerializedItemDescriptor
-initialFlag = SerializedItemDescriptor { version = 1, deleted = False, item = Just $ T.encodeUtf8 "flag" }
+initialFlag = SerializedItemDescriptor {version = 1, deleted = False, item = Just $ T.encodeUtf8 "flag"}
 
 initialSegment :: SerializedItemDescriptor
-initialSegment = SerializedItemDescriptor { version = 1, deleted = False, item = Just $ T.encodeUtf8 "segment" }
+initialSegment = SerializedItemDescriptor {version = 1, deleted = False, item = Just $ T.encodeUtf8 "segment"}
 
 initialData :: KeyMap (KeyMap SerializedItemDescriptor)
 initialData =

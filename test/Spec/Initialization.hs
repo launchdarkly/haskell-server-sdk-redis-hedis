@@ -2,7 +2,7 @@ module Spec.Initialization (allTests) where
 
 import LaunchDarkly.Server.Store (PersistentDataStore (..))
 import Test.HUnit
-import Util (makeDefaultRedisBackend, defaultPrefix, initialData, emptyData)
+import Util (defaultPrefix, emptyData, initialData, makeDefaultRedisBackend)
 
 testClientIsNotInitializedByDefault :: Test
 testClientIsNotInitializedByDefault = TestCase $ do

@@ -10,8 +10,8 @@ import Control.Monad (forM_, void)
 import Control.Monad.Catch (Exception, Handler (..), catches)
 import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Bifunctor (first)
-import Data.Functor ((<&>))
 import Data.ByteString (ByteString)
+import Data.Functor ((<&>))
 import Data.Generics.Product (getField)
 import Data.Maybe (isJust)
 import Data.Text (Text)
@@ -36,7 +36,7 @@ import Database.Redis
     )
 
 import LaunchDarkly.AesonCompat (KeyMap, fromList, mapValues, objectKeys, toList)
-import LaunchDarkly.Server.Store (serializeWithPlaceholder, byteStringToVersionedData, SerializedItemDescriptor (..), PersistentDataStore (..), StoreResult)
+import LaunchDarkly.Server.Store (PersistentDataStore (..), SerializedItemDescriptor (..), StoreResult, byteStringToVersionedData, serializeWithPlaceholder)
 
 -- | Opaque type used to configure the Redis store integration.
 data RedisStoreConfig = RedisStoreConfig
@@ -113,13 +113,13 @@ redisUpsertInternal hook config kind key opaque = run config tryUpsert
             >>= exceptOnReply
             >>= \x ->
                 liftIO hook >> case x of
-                  Nothing -> doInsert
-                  (Just byteString) -> case byteStringToVersionedData byteString of
-                      Nothing -> pure True
-                      Just decodedVersion ->
-                          if getField @"version" decodedVersion >= getField @"version" opaque
-                              then pure False
-                              else doInsert
+                    Nothing -> doInsert
+                    (Just byteString) -> case byteStringToVersionedData byteString of
+                        Nothing -> pure True
+                        Just decodedVersion ->
+                            if getField @"version" decodedVersion >= getField @"version" opaque
+                                then pure False
+                                else doInsert
     space = makeKey config kind
     doInsert =
         multiExec (hset space (encodeUtf8 key) (serializeWithPlaceholder opaque)) >>= \case
@@ -136,12 +136,8 @@ redisGetFeature config kind key =
 
 redisIsInitialized :: RedisStoreConfig -> StoreResult Bool
 redisIsInitialized config =
-    run config $
-        (get (makeKey config "$inited")
-            >>= exceptOnReply) <&> isJust
+    run config $ (get (makeKey config "$inited") >>= exceptOnReply) <&> isJust
 
 redisGetAll :: RedisStoreConfig -> Text -> StoreResult (KeyMap SerializedItemDescriptor)
 redisGetAll config kind =
-    run config $
-        (hgetall (makeKey config kind)
-            >>= exceptOnReply) <&> (mapValues createSerializedItemDescriptor . fromList . map (first decodeUtf8))
+    run config $ (hgetall (makeKey config kind) >>= exceptOnReply) <&> (mapValues createSerializedItemDescriptor . fromList . map (first decodeUtf8))

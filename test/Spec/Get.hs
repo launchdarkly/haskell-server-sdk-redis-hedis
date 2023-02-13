@@ -1,10 +1,10 @@
 module Spec.Get (allTests) where
 
+import Data.Maybe (fromJust)
+import LaunchDarkly.AesonCompat (lookupKey, mapValues)
 import LaunchDarkly.Server.Store (PersistentDataStore (..), SerializedItemDescriptor (..))
 import Test.HUnit
-import Util (initialFlag, makeDefaultRedisBackend, defaultPrefix, initialData)
-import LaunchDarkly.AesonCompat (lookupKey, mapValues)
-import Data.Maybe (fromJust)
+import Util (defaultPrefix, initialData, initialFlag, makeDefaultRedisBackend)
 
 testCanExistingItem :: Test
 testCanExistingItem = TestCase $ do
@@ -13,10 +13,8 @@ testCanExistingItem = TestCase $ do
     flag <- persistentDataStoreGetFeature backend "flags" "first-flag"
 
     assertEqual "" (Right $ Just expectedFlag) flag
-
-    where
-
-    expectedFlag = initialFlag { version = 0, deleted = False }
+  where
+    expectedFlag = initialFlag {version = 0, deleted = False}
 
 testHandlesNonExistentData :: Test
 testHandlesNonExistentData = TestCase $ do
@@ -33,11 +31,8 @@ testAllFlagsReturnsEveryFlag = TestCase $ do
     flags <- persistentDataStoreAllFeatures backend "flags"
 
     assertEqual "" (Right expectedFlags) flags
-
-    where
-
-    expectedFlags = mapValues (\flag -> flag { version = 0, deleted = False }) $ fromJust $ lookupKey "flags" initialData
-
+  where
+    expectedFlags = mapValues (\flag -> flag {version = 0, deleted = False}) $ fromJust $ lookupKey "flags" initialData
 
 allTests :: Test
 allTests =
