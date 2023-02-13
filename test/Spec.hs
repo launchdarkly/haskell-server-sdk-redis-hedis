@@ -2,9 +2,10 @@
 
 module Main where
 
-import Control.Monad (void, when)
+import Control.Monad (when)
 import Test.HUnit (Counts (..), Test (TestLabel, TestList), runTestTT)
 
+import qualified Spec.Get
 import qualified Spec.Initialization
 
 import System.Exit (ExitCode (ExitFailure), exitWith)
@@ -14,6 +15,7 @@ main = do
     Counts {..} <-
         runTestTT $
             TestList
-                [ TestLabel "Initialization" Spec.Initialization.allTests
+                [ TestLabel "Get" Spec.Get.allTests
+                , TestLabel "Initialization" Spec.Initialization.allTests
                 ]
     when (errors + failures > 0) $ exitWith (ExitFailure 1)

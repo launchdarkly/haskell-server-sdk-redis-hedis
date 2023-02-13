@@ -18,11 +18,17 @@ emptyData =
         & insertKey "flags" emptyObject
         & insertKey "segments" emptyObject
 
+initialFlag :: SerializedItemDescriptor
+initialFlag = SerializedItemDescriptor { version = 1, deleted = False, item = Just $ T.encodeUtf8 "flag" }
+
+initialSegment :: SerializedItemDescriptor
+initialSegment = SerializedItemDescriptor { version = 1, deleted = False, item = Just $ T.encodeUtf8 "segment" }
+
 initialData :: KeyMap (KeyMap SerializedItemDescriptor)
 initialData =
     emptyObject
-        & insertKey "flags" (singleton "first-flag" SerializedItemDescriptor { version = 1, deleted = False, item = Just $ T.encodeUtf8 "flag" })
-        & insertKey "segments" (singleton "first-segment" SerializedItemDescriptor { version = 1, deleted = False, item = Just $ T.encodeUtf8 "segment" })
+        & insertKey "flags" (singleton "first-flag" initialFlag)
+        & insertKey "segments" (singleton "first-segment" initialSegment)
 
 makeDefaultRedisBackend :: T.Text -> IO PersistentDataStore
 makeDefaultRedisBackend prefix = do
