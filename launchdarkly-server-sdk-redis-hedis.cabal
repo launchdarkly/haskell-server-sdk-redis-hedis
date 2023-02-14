@@ -7,7 +7,7 @@ cabal-version: 1.12
 name:           launchdarkly-server-sdk-redis-hedis
 version:        0.1.0
 synopsis:       LaunchDarkly Server-Side SDK - Redis Integration
-description:    Please see the README on GitHub at <https://github.com/launchdarkly/haskell-server-sdk-redis-hedis#readme>
+description:    Redis integration for the LaunchDarkly SDK using hedis
 category:       Web
 homepage:       https://github.com/launchdarkly/haskell-server-sdk-redis-hedis#readme
 bug-reports:    https://github.com/launchdarkly/haskell-server-sdk-redis-hedis/issues

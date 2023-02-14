@@ -15,7 +15,8 @@ extra-source-files:
 synopsis:            LaunchDarkly Server-Side SDK - Redis Integration
 category:            Web
 
-description:         Please see the README on GitHub at <https://github.com/launchdarkly/haskell-server-sdk-redis-hedis#readme>
+description: Redis integration for the LaunchDarkly SDK using hedis
+
 library:
   source-dirs: src
   exposed-modules:
