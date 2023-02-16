@@ -10,7 +10,7 @@ testCanExistingItem :: Test
 testCanExistingItem = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- persistentDataStoreInitialize backend initialData
-    flag <- persistentDataStoreGetFeature backend "flags" "first-flag"
+    flag <- persistentDataStoreGetFeature backend "features" "first-flag"
 
     assertEqual "" (Right $ Just expectedFlag) flag
   where
@@ -20,7 +20,7 @@ testHandlesNonExistentData :: Test
 testHandlesNonExistentData = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- persistentDataStoreInitialize backend initialData
-    flag <- persistentDataStoreGetFeature backend "flags" "does-not-exist"
+    flag <- persistentDataStoreGetFeature backend "features" "does-not-exist"
 
     assertEqual "" (Right Nothing) flag
 
@@ -28,11 +28,11 @@ testAllFlagsReturnsEveryFlag :: Test
 testAllFlagsReturnsEveryFlag = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- persistentDataStoreInitialize backend initialData
-    flags <- persistentDataStoreAllFeatures backend "flags"
+    flags <- persistentDataStoreAllFeatures backend "features"
 
     assertEqual "" (Right expectedFlags) flags
   where
-    expectedFlags = mapValues (\flag -> flag {version = 0, deleted = False}) $ fromJust $ lookupKey "flags" initialData
+    expectedFlags = mapValues (\flag -> flag {version = 0, deleted = False}) $ fromJust $ lookupKey "features" initialData
 
 allTests :: Test
 allTests =

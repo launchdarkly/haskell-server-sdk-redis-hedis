@@ -15,7 +15,7 @@ defaultPrefix = "launchdarkly-test-prefix"
 emptyData :: KeyMap (KeyMap SerializedItemDescriptor)
 emptyData =
     emptyObject
-        & insertKey "flags" emptyObject
+        & insertKey "features" emptyObject
         & insertKey "segments" emptyObject
 
 initialFlag :: SerializedItemDescriptor
@@ -27,7 +27,7 @@ initialSegment = SerializedItemDescriptor {version = 1, deleted = False, item = 
 initialData :: KeyMap (KeyMap SerializedItemDescriptor)
 initialData =
     emptyObject
-        & insertKey "flags" (singleton "first-flag" initialFlag)
+        & insertKey "features" (singleton "first-flag" initialFlag)
         & insertKey "segments" (singleton "first-segment" initialSegment)
 
 makeDefaultRedisBackend :: T.Text -> IO PersistentDataStore
