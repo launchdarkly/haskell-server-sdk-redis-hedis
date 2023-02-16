@@ -1,11 +1,5 @@
-# Changelog for `launchdarkly-server-sdk-redis-hedis`
+# Change log
 
-All notable changes to this project will be documented in this file.
+All notable changes to the LaunchDarkly SDK for Haskell - Redis Integration will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org).
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to the
-[Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
-## Unreleased
-
-## 0.1.0.0 - YYYY-MM-DD
