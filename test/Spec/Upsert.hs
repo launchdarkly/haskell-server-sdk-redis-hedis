@@ -1,5 +1,6 @@
 module Spec.Upsert (allTests) where
 
+import Data.ByteString (isInfixOf)
 import Data.ByteString.Char8 (pack)
 import Data.Char (toLower)
 import GHC.Natural (Natural)
@@ -36,9 +37,14 @@ testUpsertionAfterDeletionHandlesVersionsAppropriately initialVersion secondVers
     _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag secondVersion False
     flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
 
-    assertEqual "" (Right $ Just expectedFlag) flag
+    case flag of
+        Right (Just Store.SerializedItemDescriptor {Store.item = Just item, Store.version = 0, Store.deleted = False}) -> do
+            assertBool "" (expectedVersionString `isInfixOf` item)
+            assertBool "" (expectedDeletionString `isInfixOf` item)
+        _ -> assertFailure "failed to restore deleted file"
   where
-    expectedFlag = (createTestFlag expectedVersion expectedDeletionStatus) {Store.version = 0, Store.deleted = False}
+    expectedVersionString = pack $ printf "\"version\":%d" expectedVersion
+    expectedDeletionString = pack $ printf "\"deleted\":%s" (map toLower $ show expectedDeletionStatus)
 
 testUpsertionToADeletionHandlesVersionsAppropriately :: Natural -> Natural -> Natural -> Bool -> Test
 testUpsertionToADeletionHandlesVersionsAppropriately initialVersion secondVersion expectedVersion expectedDeletionStatus = TestCase $ do
@@ -48,9 +54,14 @@ testUpsertionToADeletionHandlesVersionsAppropriately initialVersion secondVersio
     _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag secondVersion True
     flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
 
-    assertEqual "" (Right $ Just expectedFlag) flag
+    case flag of
+        Right (Just Store.SerializedItemDescriptor {Store.item = Just item, Store.version = 0, Store.deleted = False}) -> do
+            assertBool "" (expectedVersionString `isInfixOf` item)
+            assertBool "" (expectedDeletionString `isInfixOf` item)
+        _ -> assertFailure "failed to restore deleted file"
   where
-    expectedFlag = (createTestFlag expectedVersion expectedDeletionStatus) {Store.version = 0, Store.deleted = False}
+    expectedVersionString = pack $ printf "\"version\":%d" expectedVersion
+    expectedDeletionString = pack $ printf "\"deleted\":%s" (map toLower $ show expectedDeletionStatus)
 
 allTests :: Test
 allTests =

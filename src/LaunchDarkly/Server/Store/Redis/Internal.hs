@@ -46,10 +46,10 @@ data RedisStoreConfig = RedisStoreConfig
 
 -- | Create a default config from a given connection pool.
 makeRedisStoreConfig :: Connection -> RedisStoreConfig
-makeRedisStoreConfig connection =
+makeRedisStoreConfig con =
     RedisStoreConfig
         { namespace = "LaunchDarkly"
-        , connection = connection
+        , connection = con
         }
 
 -- |
