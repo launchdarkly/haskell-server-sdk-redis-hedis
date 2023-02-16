@@ -48,13 +48,13 @@ data RedisStoreConfig = RedisStoreConfig
 makeRedisStoreConfig :: Connection -> RedisStoreConfig
 makeRedisStoreConfig con =
     RedisStoreConfig
-        { namespace = "LaunchDarkly"
+        { namespace = "launchdarkly"
         , connection = con
         }
 
 -- |
 -- Configure the Redis key prefix. All keys are prefixed by default before
--- being inserted into Redis. The default prefix is "LaunchDarkly".
+-- being inserted into Redis. The default prefix is "launchdarkly".
 redisConfigSetNamespace :: Text -> RedisStoreConfig -> RedisStoreConfig
 redisConfigSetNamespace namespace' config = config {namespace = namespace'}
 

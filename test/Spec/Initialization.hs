@@ -47,14 +47,14 @@ testInitializationReplacesAllPreviousData = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- persistentDataStoreInitialize backend initialData
     _ <- persistentDataStoreIsInitialized backend
-    flagResult <- persistentDataStoreGetFeature backend "flags" "first-flag"
+    flagResult <- persistentDataStoreGetFeature backend "features" "first-flag"
     segmentResult <- persistentDataStoreGetFeature backend "segments" "first-segment"
 
     case flagResult of Right (Just _) -> pure (); _ -> assertFailure "first-flag was not present"
     case segmentResult of Right (Just _) -> pure (); _ -> assertFailure "first-segment was not present"
 
     _ <- persistentDataStoreInitialize backend emptyData
-    flagResult' <- persistentDataStoreGetFeature backend "flags" "first-flag"
+    flagResult' <- persistentDataStoreGetFeature backend "features" "first-flag"
     segmentResult' <- persistentDataStoreGetFeature backend "segments" "first-segment"
 
     case flagResult' of Right Nothing -> pure (); _ -> assertFailure "first-flag was not present"

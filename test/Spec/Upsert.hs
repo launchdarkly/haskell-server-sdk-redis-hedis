@@ -21,9 +21,9 @@ testHandlesVersionsAppropriately :: Natural -> Natural -> Natural -> Test
 testHandlesVersionsAppropriately initialVersion secondVersion expectedVersion = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- Store.persistentDataStoreInitialize backend emptyData
-    _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag initialVersion False
-    _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag secondVersion False
-    flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
+    _ <- Store.persistentDataStoreUpsertFeature backend "features" "first-flag" $ createTestFlag initialVersion False
+    _ <- Store.persistentDataStoreUpsertFeature backend "features" "first-flag" $ createTestFlag secondVersion False
+    flag <- Store.persistentDataStoreGetFeature backend "features" "first-flag"
 
     assertEqual "" (Right $ Just expectedFlag) flag
   where
@@ -33,9 +33,9 @@ testUpsertionAfterDeletionHandlesVersionsAppropriately :: Natural -> Natural -> 
 testUpsertionAfterDeletionHandlesVersionsAppropriately initialVersion secondVersion expectedVersion expectedDeletionStatus = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- Store.persistentDataStoreInitialize backend emptyData
-    _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag initialVersion True
-    _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag secondVersion False
-    flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
+    _ <- Store.persistentDataStoreUpsertFeature backend "features" "first-flag" $ createTestFlag initialVersion True
+    _ <- Store.persistentDataStoreUpsertFeature backend "features" "first-flag" $ createTestFlag secondVersion False
+    flag <- Store.persistentDataStoreGetFeature backend "features" "first-flag"
 
     case flag of
         Right (Just Store.SerializedItemDescriptor {Store.item = Just item, Store.version = 0, Store.deleted = False}) -> do
@@ -50,9 +50,9 @@ testUpsertionToADeletionHandlesVersionsAppropriately :: Natural -> Natural -> Na
 testUpsertionToADeletionHandlesVersionsAppropriately initialVersion secondVersion expectedVersion expectedDeletionStatus = TestCase $ do
     backend <- makeDefaultRedisBackend defaultPrefix
     _ <- Store.persistentDataStoreInitialize backend emptyData
-    _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag initialVersion False
-    _ <- Store.persistentDataStoreUpsertFeature backend "flags" "first-flag" $ createTestFlag secondVersion True
-    flag <- Store.persistentDataStoreGetFeature backend "flags" "first-flag"
+    _ <- Store.persistentDataStoreUpsertFeature backend "features" "first-flag" $ createTestFlag initialVersion False
+    _ <- Store.persistentDataStoreUpsertFeature backend "features" "first-flag" $ createTestFlag secondVersion True
+    flag <- Store.persistentDataStoreGetFeature backend "features" "first-flag"
 
     case flag of
         Right (Just Store.SerializedItemDescriptor {Store.item = Just item, Store.version = 0, Store.deleted = False}) -> do
