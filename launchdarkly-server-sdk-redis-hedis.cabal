@@ -49,7 +49,7 @@ library
     , exceptions >=0.10.4 && <0.11
     , generic-lens >=2.0.0.0 && <2.3
     , hedis >=0.12.15 && <0.16
-    , launchdarkly-server-sdk
+    , launchdarkly-server-sdk >=4.0 && <5
     , text >=1.2.4.0 && <2.1
   default-language: Haskell2010
 

@@ -4,5 +4,4 @@ packages:
 - .
 
 extra-deps:
-- git: git@github.com:launchdarkly/haskell-server-sdk-private.git
-  commit: 182e2e124619bb34ba5ede3edf68f1ae6813492a
+- launchdarkly-server-sdk-4.0.0

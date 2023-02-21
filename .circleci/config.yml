@@ -10,9 +10,6 @@ jobs:
         - image: haskell:latest
         - image: redis
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "a4:1a:3f:ad:2a:5b:40:ff:2e:3d:b5:63:1c:b3:88:2c"
       - checkout
       - run:
           name: Install libpcre
@@ -44,9 +41,6 @@ jobs:
     macos:
       xcode: "12.5.1"
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "a4:1a:3f:ad:2a:5b:40:ff:2e:3d:b5:63:1c:b3:88:2c"
       - checkout
       - run:
           name: Install deps
