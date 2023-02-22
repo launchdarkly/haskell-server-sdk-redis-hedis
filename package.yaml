@@ -34,7 +34,7 @@ dependencies:
   - hedis >=0.12.15 && <0.16
   - generic-lens >=2.0.0.0 && <2.3
   - text >=1.2.4.0 && <2.1
-  - launchdarkly-server-sdk
+  - launchdarkly-server-sdk >=4.0 && <5
 tests:
   haskell-server-sdk-redis-hedis-test:
     main: Spec.hs
