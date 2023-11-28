@@ -1,0 +1,29 @@
+name: CI Workflow
+description: 'Shared CI workflow.'
+inputs:
+  run_tests:
+    description: 'If true, run unit tests, otherwise skip them.'
+    required: false
+    default: 'true'
+  resolver:
+    description: 'Which resolver to use when building the package'
+    required: false
+    default: 'lts-16.31'
+
+runs:
+  using: composite
+  steps:
+    - uses: haskell-actions/setup@v2
+
+    - name: Update dependencies
+      shell: bash
+      run: stack --no-terminal --resolver=${{ inputs.resolver }} setup --install-ghc
+
+    - name: Build library
+      shell: bash
+      run: stack --no-terminal --resolver=${{ inputs.resolver }} build
+
+    - name: Run tests
+      shell: bash
+      run: stack --no-terminal --resolver=${{ inputs.resolver }} test
+      if: ${{ inputs.run_tests == 'true' }}

@@ -1,5 +1,5 @@
 name:                launchdarkly-server-sdk-redis-hedis
-version:             1.0.0
+version:             1.0.0 # x-release-please-version
 github:              "launchdarkly/haskell-server-sdk-redis-hedis"
 license:             Apache-2.0
 license-file:        "LICENSE"

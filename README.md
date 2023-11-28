@@ -1,7 +1,7 @@
 # LaunchDarkly Server SDK for Haskell - Redis Integration
 
+[![Run CI](https://github.com/launchdarkly/haskell-server-sdk-redis-hedis/actions/workflows/ci.yml/badge.svg)](https://github.com/launchdarkly/haskell-server-sdk-redis-hedis/actions/workflows/ci.yml)
 [![Hackage](https://img.shields.io/hackage/v/launchdarkly-server-sdk-redis-hedis)](https://hackage.haskell.org/package/launchdarkly-server-sdk-redis-hedis)
-[![CircleCI](https://circleci.com/gh/launchdarkly/haskell-server-sdk-redis-hedis.svg?style=shield)](https://circleci.com/gh/launchdarkly/haskell-server-sdk-redis-hedis)
 [![Documentation](https://img.shields.io/static/v1?label=GitHub+Pages&message=API+reference&color=00add8)](https://launchdarkly.github.io/haskell-server-sdk-redis-hedis)
 
 ## LaunchDarkly overview
