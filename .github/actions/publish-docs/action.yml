@@ -4,13 +4,17 @@ inputs:
   token:
     description: 'Token to use for publishing.'
     required: true
+  resolver:
+    description: 'Which resolver to use when building the package'
+    required: false
+    default: 'lts-16.31'
 
 runs:
   using: composite
   steps:
     - name: Setup dist directory
       shell: bash
-      run: echo "STACK_DIR=$(stack --no-terminal path --dist-dir)" >> $GITHUB_ENV
+      run: echo "STACK_DIR=$(stack --no-terminal path --dist-dir --resolver=${{ inputs.resolver }})" >> $GITHUB_ENV
 
     - uses: launchdarkly/gh-actions/actions/publish-pages@publish-pages-v1.0.1
       name: 'Publish to Github pages'
