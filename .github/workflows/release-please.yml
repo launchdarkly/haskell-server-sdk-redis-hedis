@@ -21,12 +21,8 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: google-github-actions/release-please-action@v3
+      - uses: googleapis/release-please-action@v4
         id: release
-        with:
-          command: manifest
-          token: ${{secrets.GITHUB_TOKEN}}
-          default-branch: main
 
       - uses: actions/checkout@v4
         with:
@@ -43,30 +39,30 @@ jobs:
       #
       # These remaining steps are ONLY run if a release was actually created
       #
-      - uses: launchdarkly/gh-actions/actions/release-secrets@release-secrets-v1.0.0
+      - uses: launchdarkly/gh-actions/actions/release-secrets@release-secrets-v1.2.0
         name: 'Get Hackage token'
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         with:
           aws_assume_role: ${{ vars.AWS_ROLE_ARN }}
           ssm_parameter_pairs: '/production/common/releasing/hackage/password = HACKAGE_TOKEN'
 
       - uses: ./.github/actions/setup-cache
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - uses: ./.github/actions/ci
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - uses: ./.github/actions/build-docs
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - uses: ./.github/actions/publish
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         with:
           token: ${{ env.HACKAGE_TOKEN }}
           dry_run: 'false'
 
       - uses: ./.github/actions/publish-docs
-        if: ${{ steps.release.outputs.releases_created }}
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         with:
           # If publishing somewhere else, then get the token from SSM. If you need both github,
           # and another token, then add more tokens to the composite action.

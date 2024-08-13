@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         resolver: ["lts-16.31", "lts-18.28", "lts-19.33", "lts-20.11"]
 
@@ -37,16 +38,32 @@ jobs:
     runs-on: macos-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        resolver: ["lts-16.31", "lts-18.28", "lts-19.33", "lts-20.11"]
+        include:
+          - resolver: lts-18.28
+            use-llvm: 'true'
+          - resolver: lts-19.33
+            use-llvm: 'true'
+          - resolver: lts-20.11
+            use-llvm: 'false'
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # If you only need the current version keep this.
 
-      - name: Install os dependencies
-        run: brew install pcre
+      - name: Setup C_INCLUDE_PATH
+        run: |
+          brew install pcre
+          echo "C_INCLUDE_PATH=$(find /opt/homebrew/Cellar/pcre -name 'pcre.h' -exec dirname {} \;):$(xcrun --show-sdk-path)/usr/include/ffi" >> $GITHUB_ENV
+
+
+      - name: Add LLVM to path
+        if: ${{ matrix.use-llvm == 'true' }}
+        run: |
+          brew install llvm@14
+          echo "PATH=/opt/homebrew/opt/llvm@14/bin:$PATH" >> $GITHUB_ENV
 
       - uses: ./.github/actions/setup-cache
       - uses: ./.github/actions/ci
@@ -80,7 +97,7 @@ jobs:
         with:
           fail-on: warning
 
-      - uses: haskell-actions/run-fourmolu@v9
+      - uses: haskell-actions/run-fourmolu@v10
         with:
           version: "0.10.1.0"
           pattern: |
