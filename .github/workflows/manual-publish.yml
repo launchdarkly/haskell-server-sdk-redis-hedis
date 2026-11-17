@@ -22,7 +22,7 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install PCRE development libraries
         run: sudo apt-get update && sudo apt-get install -y libpcre3-dev
@@ -32,7 +32,7 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/ci
 
-      - uses: launchdarkly/gh-actions/actions/release-secrets@release-secrets-v1.2.0
+      - uses: launchdarkly/gh-actions/actions/release-secrets@release-secrets-v1.2.1
         name: 'Get Hackage token'
         with:
           aws_assume_role: ${{ vars.AWS_ROLE_ARN }}

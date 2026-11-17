@@ -25,7 +25,7 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install PCRE development libraries
         run: sudo apt-get update && sudo apt-get install -y libpcre3-dev
@@ -50,7 +50,7 @@ jobs:
             use-llvm: 'false'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup C_INCLUDE_PATH
         run: |
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-cache
         with:
