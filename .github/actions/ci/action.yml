@@ -21,6 +21,10 @@ runs:
       shell: bash
       run: stack --no-terminal --resolver=${{ inputs.resolver }} setup --install-ghc
 
+    - uses: ./.github/actions/use-default-linker
+      with:
+        ghc: stack --no-terminal --resolver=${{ inputs.resolver }} exec -- ghc
+
     - name: Build library
       shell: bash
       run: stack --no-terminal --resolver=${{ inputs.resolver }} build
