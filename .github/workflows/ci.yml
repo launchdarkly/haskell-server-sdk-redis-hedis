@@ -16,7 +16,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        resolver: ["lts-16.31", "lts-18.28", "lts-19.33", "lts-20.11"]
+        include:
+          - resolver: lts-16.31
+            ghc-version: 8.8.4
+          - resolver: lts-18.28
+            ghc-version: 8.10.7
+          - resolver: lts-19.33
+            ghc-version: 9.0.2
+          - resolver: lts-20.11
+            ghc-version: 9.2.5
 
     services:
       redis:
@@ -28,23 +36,26 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/setup-cache
+        with:
+          resolver: ${{ matrix.resolver }}
+
       - uses: ./.github/actions/ci
         with:
           resolver: ${{ matrix.resolver }}
+          ghc-version: ${{ matrix.ghc-version }}
 
   build-macosx:
     runs-on: macos-latest
 
+    # The macOS runners are arm64. GHC before 9.2 has no native code
+    # generator on arm64 and must build through LLVM, which is slow. The
+    # Linux jobs test the older compilers, so macOS tests only the newest.
     strategy:
       fail-fast: false
       matrix:
         include:
-          - resolver: lts-18.28
-            use-llvm: 'true'
-          - resolver: lts-19.33
-            use-llvm: 'true'
           - resolver: lts-20.11
-            use-llvm: 'false'
+            ghc-version: 9.2.5
 
     steps:
       - uses: actions/checkout@v4
@@ -53,17 +64,14 @@ jobs:
         run: |
           echo "C_INCLUDE_PATH=$(xcrun --show-sdk-path)/usr/include/ffi" >> $GITHUB_ENV
 
-
-      - name: Add LLVM to path
-        if: ${{ matrix.use-llvm == 'true' }}
-        run: |
-          brew install llvm@14
-          echo "PATH=/opt/homebrew/opt/llvm@14/bin:$PATH" >> $GITHUB_ENV
-
       - uses: ./.github/actions/setup-cache
+        with:
+          resolver: ${{ matrix.resolver }}
+
       - uses: ./.github/actions/ci
         with:
           resolver: ${{ matrix.resolver }}
+          ghc-version: ${{ matrix.ghc-version }}
           run_tests: false # We don't have redis running here so the tests will fail
 
   quality-checks:
@@ -74,6 +82,7 @@ jobs:
 
       - uses: ./.github/actions/setup-cache
         with:
+          resolver: none
           ghc-version: '9.4.7'
 
       - uses: haskell-actions/setup@f9150cb1d140e9a9271700670baa38991e6fa25c # v2.10.3
