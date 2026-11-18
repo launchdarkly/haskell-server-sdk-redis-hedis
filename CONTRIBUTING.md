@@ -14,15 +14,9 @@ We encourage pull requests and other contributions from the community. Before su
 
 ### Prerequisites
 
-The SDK depends on [PCRE](https://www.pcre.org/) and [`pkgconf`](https://github.com/pkgconf/pkgconf). You'll need to make sure these are installed.
+The SDK is built using [Stack](https://docs.haskellstack.org/en/stable/README/). If you use [Homebrew](https://brew.sh/), you can install the `haskell-stack` package to install Stack.
 
-If you use [Homebrew](https://brew.sh/) you can install the necessary packages by running the following command:
-
-```
-brew install pcre pkg-config
-```
-
-Additionally, you can install the `haskell-stack` package to install Stack via Homebrew.
+The SDK does not need any system libraries.
 
 ### Building
 
