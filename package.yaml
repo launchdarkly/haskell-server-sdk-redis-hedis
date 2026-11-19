@@ -1,31 +1,26 @@
-name:                launchdarkly-server-sdk-redis-hedis
-version:             1.0.0 # x-release-please-version
-github:              "launchdarkly/haskell-server-sdk-redis-hedis"
-license:             Apache-2.0
-license-file:        "LICENSE"
-author:              "LaunchDarkly"
-maintainer:          "dev@launchdarkly.com"
-copyright:           "2023 Catamorphic, Co"
-
+name: launchdarkly-server-sdk-redis-hedis
+version: 1.0.1
+github: launchdarkly/haskell-server-sdk-redis-hedis
+license: Apache-2.0
+license-file: LICENSE
+author: LaunchDarkly
+maintainer: dev@launchdarkly.com
+copyright: 2023 Catamorphic, Co
 extra-source-files:
-- README.md
-- CHANGELOG.md
-- LICENSE
-
-synopsis:            LaunchDarkly Server-Side SDK - Redis Integration
-category:            Web
-
+  - README.md
+  - CHANGELOG.md
+  - LICENSE
+synopsis: LaunchDarkly Server-Side SDK - Redis Integration
+category: Web
 description: Redis integration for the LaunchDarkly SDK using hedis
-
 library:
   source-dirs: src
   exposed-modules:
     - LaunchDarkly.Server.Store.Redis
   ghc-options:
-  - -fwarn-unused-imports
-  - -Wall
-  - -Wno-name-shadowing
-
+    - '-fwarn-unused-imports'
+    - '-Wall'
+    - '-Wno-name-shadowing'
 dependencies:
   - aeson >=1.4.7.1 && <1.6 || >= 2.0.1.0 && <2.2
   - base >=4.13.0.0 && <5
@@ -39,23 +34,22 @@ tests:
   haskell-server-sdk-redis-hedis-test:
     main: Spec.hs
     source-dirs:
-    - test
-    - src
+      - test
+      - src
     ghc-options:
-    - -rtsopts
-    - -threaded
-    - -with-rtsopts=-N
-    - -Wno-name-shadowing
-    - -fwarn-unused-imports
-    - -Wall
+      - '-rtsopts'
+      - '-threaded'
+      - '-with-rtsopts=-N'
+      - '-Wno-name-shadowing'
+      - '-fwarn-unused-imports'
+      - '-Wall'
     dependencies:
-    - HUnit
-    - launchdarkly-server-sdk
-
+      - HUnit
+      - launchdarkly-server-sdk
 default-extensions:
-- DataKinds
-- DeriveAnyClass
-- LambdaCase
-- OverloadedStrings
-- ScopedTypeVariables
-- TypeApplications
+  - DataKinds
+  - DeriveAnyClass
+  - LambdaCase
+  - OverloadedStrings
+  - ScopedTypeVariables
+  - TypeApplications
